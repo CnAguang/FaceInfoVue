@@ -53,7 +53,6 @@
 
   <!-- 表格 -->
     <el-table
-     
       :data="list"
       element-loading-text="数据加载中"
       border
@@ -86,10 +85,35 @@
 
       <el-table-column prop="createTime" label="添加时间" width="160"/>
 
-      <el-table-column label="购买物品" width="400" align="left">
+      <el-table-column label="添加购买物品" align="left" width="310">
+       <!-- <template>
+        <div class="block">
+          <span class="demonstration">单选可搜索</span>
+        <el-cascader
+          placeholder="试试搜索：指南"
+          :options="options"
+          filterable>
+        </el-cascader>
+      </div>
+      </template> -->
+        <template slot-scope="scope">
+            <div class="block">
+          <el-cascader
+          ref="cascaderAddr" 
+          placeholder="点击搜索"
+          :props="defaultParams"
+          :options="options"
+          filterable
+          @change="optionChange"
+          >
+        </el-cascader>
+            <el-button type="primary" size="mini"  icon="el-icon-edit" @click="open(scope.row.id)">添加</el-button></div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="已购物品" width="400" align="left">
         <template slot-scope="scope">
             {{scope.row.goods}}
-            <el-button type="primary" size="mini"  icon="el-icon-edit" @click="open(scope.row.id)">添加</el-button>
         </template>
       </el-table-column>
 
@@ -120,12 +144,19 @@
 <script>
 //引入teacher.js文件
  import face from '@/api/face'
-
+ import shopInfo from '@/api/shopInfo'
 export default {
  //   data:{
     // },
     data(){ //定义遍历和初始值
         return{
+            options:[],
+            defaultParams: { 
+              label: 'lable',
+              value: 'value',
+              children: 'children'
+            },
+            shopName:'',
             list:null,  //查询之后接口返回集合
             page:1,     //当前页
             limit:12,   //每页记录数
@@ -134,10 +165,21 @@ export default {
         }
     },
     created(){
-        //调用
-        this.getList()
+        this.getCategoryAndGoods()
+        this.getList()        //调用
     },   
     methods:{
+      optionChange(val){
+        console.log(val[1])
+        this.shopName = val[1];
+      },
+        //下拉表商品
+        getCategoryAndGoods(){
+          shopInfo.getGoodsAndCategory().then(response=>{
+            this.options = response.data.list
+            console.log(this.options)
+          })
+        },
         //讲师列表的方法
         getList(page = 1){
             this.page = page
@@ -158,26 +200,15 @@ export default {
           this.getList();
         },
         open(id) {
-        this.$prompt('请输入用户所购买的物品', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消'
-        }).then(({ value }) => {
-          face.addShopping(id,value)
-          .then(response =>{
+          //根据id添加商品
+          face.addShopping(id,this.shopName).then(response=>{
             this.$message({
-            type: 'success',
-            message: '用户购买的物品为: ' + value
+            message: '添加成功',
+            type: 'success'
           });
           this.getList()
           })
-    
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '取消输入'
-          });       
-        });
-      },
+        },
         // //逻辑删除讲师的功能
         removeDataById(id){
            this.$confirm('是否删除该条信息', '提示', {

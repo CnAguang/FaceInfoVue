@@ -2,25 +2,48 @@
 <div class = "app-containe">
 
     <div class = "block1">   <!--  区块1 -->
+        <!-- 第一小块 -->
+        <div style="height:30%">
         <div style="margin-top: 100px;">
             <button style="color:white;background-color:#409EFF;border:2px solid #409EFF;border-radius: 10px; width:220px;height: 50px;margin-left: 35%;">选择标签</button>
         </div>
         <div style="margin-top: 20px;margin-left: 28%;">
-            <button style="width:150px;height:40px;border-radius: 10px;border: 2px; " >男性</button>
-            <button style="width:150px;height:40px;border-radius: 10px;border: 2px;margin-left: 10px;">女性</button>
+            <button style="width:150px;height:40px;border-radius: 10px;border: 2px;" ref="male"  @click="male()" >男性</button>
+            <button style="width:150px;height:40px;border-radius: 10px;border: 2px;margin-left: 10px;" ref="female"  @click="female()">女性</button>
         </div>
         <div style="margin-top: 20px;margin-left: 20%;">
             <button style="width:150px;height:40px;border-radius: 10px;border: 2px;" ref="teenager" @click="teenager()">青年</button>
             <button style="width:150px;height:40px;border-radius: 10px;border: 2px;" ref="middle" @click="middle()">中年</button>
             <button style="width:150px;height:40px;border-radius: 10px;border: 2px;" ref="old" @click="old()">老年</button>
         </div>
+        </div>
+        <!-- 第三小块 -->
+        <div style="height:70%" id="chart1"> 
+
+        </div>
     </div>
 
     <div class = "block">
         <!-- 区块2 -->
-        <div style="margin-top: 100px;">
+            <!-- 第二小块 -->
+            <div style="height: 50%" id="chart2"></div>
+            <!-- 第四小块 -->
+            <div style="height: 50%" >
+                <div style="height: 50%;float: left;width: 50%;">
+                  <h3>本季度最受欢迎的类型是 </h3>
+                  <h3>本季度最受欢迎的商品是 </h3>
+                </div>
+                <div style="float:left;height: 50%;width: 50%; " id="miniChart1">
+                  最受欢迎类型
 
-        </div>
+                </div>
+                <div style="height: 50%;float: left;width: 50%;" id="miniChart2">
+                 第二
+                </div>
+                <div style="float:left;height: 50%;width: 50%;" id="miniChart3">
+                第三
+                </div>
+            </div>
     </div>
 
 </div>
@@ -30,62 +53,428 @@
 
 <script>
 import shopInfo from '@/api/shopInfo'
+import echarts from 'echarts'
 export default {
     data(){
         return{
-            
+            conditions:{
+                clickMale:'',
+                clickFemale:'',
+                clickTeenager:'',
+                clickMiddle:'',
+                clickOld:'',
+                chart1:null,
+                chart2:null,
+                miniChart1:null,
+                miniChart2:null,
+                miniChart3:null,
+                numberOne:null,
+                numberTwo:null,
+                numberThree:null
+            },
+            nums:[],
+            goodsName:[],
+            values:[]
         }
+    },
+    mounted(){
+        this.showChart1();
+        this.showChart2();
+        // this.showChart3(); 
+        this.showMiniChart1();
+        this.showMiniChart3();
+        this.showMiniChart2();
     },
     created(){
 
     },
     methods:{
+       showMiniChart1(){
+        this.miniChart1 = echarts.init(document.getElementById("miniChart1"),'dark');
+      var  option = {
+  title: {
+    text: '最受欢迎的类型',
+    subtext: this.numberOne,
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left'
+  },
+  series: [
+    {
+      name: 'Access From',
+      type: 'pie',
+      radius: '50%',
+      color:["#DC541B","#EC7696","#FCC307"],
+      data: [
+        { value: 1048, name: 'Search Engine' },
+        { value: 735, name: 'Direct' },
+        { value: 580, name: 'Email' },
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};  
+      this.miniChart1.setOption(option);  
+       },
+       showMiniChart2(){
+        this.miniChart2 = echarts.init(document.getElementById("miniChart2"),'dark');
+      var  option = {
+  title: {
+    text: '第二受欢迎的类型',
+    subtext: this.numberTwo,
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left'
+  },
+  series: [
+    {
+      name: 'Access From',
+      type: 'pie',
+      radius: '50%',
+      data: [
+        { value: 1048, name: 'Search Engine' },
+        { value: 735, name: 'Direct' },
+        { value: 580, name: 'Email' },
+      ],
+      color:["#73c0de","#9a60b4","#EE2746"],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};  
+      this.miniChart2.setOption(option);  
+       },
+       showMiniChart3(){
+        this.miniChart3 = echarts.init(document.getElementById("miniChart3"),'dark');
+      var  option = {
+  title: {
+    text: '第三受欢迎的类型',
+    subtext: this.numberThree,
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left'
+  },
+  series: [
+    {
+      name: 'Access From',
+      type: 'pie',
+      radius: '50%',
+      data: [
+        { value: 1048, name: 'Search Engine' },
+        { value: 735, name: 'Direct' },
+        { value: 580, name: 'Email' },
+      ],
+      color:["#91cc75","#fac858","#ee6666"],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};  
+      this.miniChart3.setOption(option);  
+       },
+        showChart2(){
+            shopInfo.getcigaretteChart(this.conditions).then(response =>{
+            this.chart2 = echarts.init(document.getElementById("chart2"),'dark');
+           var option = {
+  xAxis: {
+    type: 'category',
+    data: []
+  },
+  yAxis: {
+    type: 'value'
+  },
+  color:[
+    "#7cffb2"
+    ],
+  series: [
+    {
+      data: [],
+    //   {
+    //       value: 200,
+    //       itemStyle: {
+    //         color: '#7cffb2'
+    //       }
+    //     },
+    //     {
+    //       value: 200,
+    //       itemStyle: {
+    //         color: '#fddd60'
+    //       }
+    //     },
+    //     {
+    //       value: 200,
+    //       itemStyle: {
+    //         color: '#ff6e76'
+    //       }
+    //     },      
+    //     {
+    //       value: 200,
+    //       itemStyle: {
+    //         color: '#58d9f9'
+    //       }
+    //     },
+    //     {
+    //       value: 200,
+    //       itemStyle: {
+    //         color: '#05c091'
+    //       }
+    //     },
+    //     {
+    //       value: 200,
+    //       itemStyle: {
+    //         color: '#ff8a45'
+    //       }
+    //     },
+      
+      type: 'bar'
+    }
+  ]
+            };
+            this.goodsName = response.data.data
+            this.values = response.data.values;
+            option.xAxis.data = this.goodsName
+            var length = this.values.length
+            console.log( option)
+            for(var i = 0;i<length;i++){
+              option.series[0].data[i] = this.values[i];
+            }
+        this.chart2.setOption(option);  
+        })
+        },
+        showChart1(){   
+            shopInfo.getTypePieChart(this.conditions).then(response =>{
+                this.nums = response.data.values
+                this.chart1 = echarts.init(document.getElementById("chart1"),'dark');
+              var  option = {
+  title: {
+    text: '消费类型分布',
+    subtext: '购买数据',
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left'
+  },
+  series: [
+    {
+      name: 'Access From',
+      type: 'pie',
+      radius: '50%',
+      color:["#4992ff","#7cffb2","#fddd60","#ff6e76","#58d9f9","#05c091"],
+      data: [
+        { value: this.nums[0], name: '香烟' },
+        { value: this.nums[1], name: '酒' },
+        { value: this.nums[2], name: '零食' },
+        { value: this.nums[3], name: '生活用品' },
+        { value: this.nums[4], name: '学习用品' },
+        { value: this.nums[5], name:'饮料'}
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};           this.chart1.setOption(option);
+
+                    
+             })
+        },
+        male(){
+            if(this.conditions.clickMale=='男'){
+                // 该标签被点击,再次点击清空
+                this.$refs.male.style.backgroundColor=""
+                this.$refs.male.style.color=""
+                this.conditions.clickMale=''
+             
+                if(this.conditions.clickTeenager =='青年'){
+                    //已经点击了
+                    this.conditions.clickTeenager='';//清空条件,为了再计算一遍
+                    this.teenager()
+                }
+                if(this.conditions.clickMiddle =='中年'){
+                    //已经点击了
+                    this.conditions.clickMiddle='';//清空条件,为了再计算一遍
+                    this.middle()
+                }
+                if(this.conditions.clickOld =='老年'){
+                    //已经点击了
+                    this.conditions.c
+                    lickOld='';//清空条件,为了再计算一遍
+                    this.old()
+                }
+                this.showChart1()
+                this.showChart2();
+            }else{
+                this.$refs.male.style.backgroundColor="#6FD13F"
+                this.$refs.male.style.color="white"
+                this.conditions.clickMale='男'
+                if(this.conditions.clickTeenager =='青年'){
+                    //已经点击了
+                    this.conditions.clickTeenager='';//清空条件,为了再计算一遍
+                    this.teenager()
+                }
+                if(this.conditions.clickMiddle =='中年'){
+                    //已经点击了
+                    this.conditions.clickMiddle='';//清空条件,为了再计算一遍
+                    this.middle()
+                }
+                if(this.conditions.clickOld =='老年'){
+                    //已经点击了
+                    this.conditions.clickOld='';//清空条件,为了再计算一遍
+                    this.old()
+                }
+                this.showChart1()
+                this.showChart2();
+            }
+
+        },
+        female(){
+            if(this.conditions.clickFemale=='女'){
+                // 该标签被点击
+                this.$refs.female.style.backgroundColor=""
+                this.$refs.female.style.color=""
+                this.conditions.clickFemale=''
+                if(this.conditions.clickTeenager =='青年'){
+                    //已经点击了
+                    this.conditions.clickTeenager='';//清空条件,为了再计算一遍
+                    this.teenager()
+                }
+                if(this.conditions.clickMiddle =='中年'){
+                    //已经点击了
+                    this.conditions.clickMiddle='';//清空条件,为了再计算一遍
+                    this.middle()
+                }
+                if(this.conditions.clickOld =='老年'){
+                    //已经点击了
+                    this.conditions.clickOld='';//清空条件,为了再计算一遍
+                    this.old()
+                }
+                this.showChart1()
+                this.showChart2();
+            }else{
+                this.$refs.female.style.backgroundColor="#6FD13F"
+                this.$refs.female.style.color="white"
+                this.conditions.clickFemale='女'
+                if(this.conditions.clickTeenager =='青年'){
+                    //已经点击了
+                    this.conditions.clickTeenager='';//清空条件,为了再计算一遍
+                    this.teenager()
+                }
+                if(this.conditions.clickMiddle =='中年'){
+                    //已经点击了
+                    this.conditions.clickMiddle='';//清空条件,为了再计算一遍
+                    this.middle()
+                }
+                if(this.conditions.clickOld =='老年'){
+                    //已经点击了
+                    this.conditions.clickOld='';//清空条件,为了再计算一遍
+                    this.old()
+                }
+                this.showChart1()
+                this.showChart2();
+            }
+        },
         //计算青年百分比
         teenager(){
-           var teen =  this.$refs.teenager.innerHTML;
-           if(teen=='青年'){
-            shopInfo.getTeenagerPercent().then(response =>{
+           if(this.conditions.clickTeenager !='青年'){//如果未点击
+            this.conditions.clickTeenager = '青年'
+            shopInfo.getTeenagerPercent(this.conditions).then(response =>{
                 var teenPercent = response.data.teenPercent;
-                this.$refs.teenager.style.backgroundColor="#92EF64"
+                this.$refs.teenager.style.backgroundColor="#6FD13F"
                 this.$refs.teenager.style.color="white"
                 this.$refs.teenager.innerHTML='青年\n'+teenPercent+'%'
             })
+            this.showChart1()
+            this.showChart2();
            }else{
+            //已点击，再点一次
             this.$refs.teenager.innerHTML='青年'
             this.$refs.teenager.style.backgroundColor=""
             this.$refs.teenager.style.color=""
+            this.conditions.clickTeenager = ''
            }
+           this.showChart1()
+           this.showChart2();
         },
         //计算中年百分比
         middle(){
-           var middle =  this.$refs.middle.innerHTML;
-           if(middle=='中年'){
-            shopInfo.getMiddlePercent().then(response =>{
-                var oldPercent = response.data.middlePercent;
+           if(this.conditions.clickMiddle!='中年'){//点击
+            this.conditions.clickMiddle = '中年'
+            shopInfo.getMiddlePercent(this.conditions).then(response =>{
+                var middlePercent = response.data.middlePercent;
                 this.$refs.middle.style.backgroundColor="#92EF64"
                 this.$refs.middle.style.color="white"
-                this.$refs.middle.innerHTML='中年\n'+oldPercent+'%'
+                this.$refs.middle.innerHTML='中年\n'+middlePercent+'%'
             })
+            this.showChart1()
+            this.showChart2();
            }else{
+            console.log(1)
             this.$refs.middle.innerHTML='中年'
             this.$refs.middle.style.backgroundColor=""
             this.$refs.middle.style.color=""
+            this.conditions.clickMiddle = ''
+            this.showChart1()
+            this.showChart2();
            }
         },
         //计算老年百分比
         old(){
-           var old =  this.$refs.old.innerHTML;
-           if(old=='老年'){
-            shopInfo.getOldPercent().then(response =>{
+           if(this.conditions.clickOld!='老年'){
+            this.conditions.clickOld='老年'
+            shopInfo.getOldPercent(this.conditions).then(response =>{
                 var oldPercent = response.data.oldPercent;
                 this.$refs.old.style.backgroundColor="#92EF64"
                 this.$refs.old.style.color="white"
                 this.$refs.old.innerHTML='老年\n'+oldPercent+'%'
             })
+            this.showChart1()
+            this.showChart2();
            }else{
             this.$refs.old.innerHTML='老年'
             this.$refs.old.style.backgroundColor=""
             this.$refs.old.style.color=""
+            this.conditions.clickOld=''
+            this.showChart1()
+            this.showChart2();
            }
         }
     } 

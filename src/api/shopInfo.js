@@ -1,22 +1,52 @@
 import request from '@/utils/request'
 
 export default{
-    getTeenagerPercent(){
+    getcigaretteChart(data){
+        return request({
+            url:'http://localhost:8009/shopInfo/getCigarette',
+            method:"post",
+            data:data
+        })
+    },
+    getTypePieChart(data){
+        return request({
+            url:'http://localhost:8009/shopInfo/getTypeChart',
+            method:"post",
+            data:data
+        })
+    },
+    addStore(goodsvo){
+        return request({
+            url:'http://localhost:8009/region/goods/addStore',
+            method:'post',
+            data:goodsvo
+        })
+    },
+    getGoodsAndCategory(){
+        return request({
+            url:'http://localhost:8009/region/consumption/getCategoryAndGoods',
+            method:'get'
+        })
+    },
+    getTeenagerPercent(data){
         return request({
             url:'http://localhost:8009/shopInfo/getTeenPercen',
-            method:'get'
+            method:'post',
+            data:data
         })
     },
-    getMiddlePercent(){
+    getMiddlePercent(data){
         return request({
             url:'http://localhost:8009/shopInfo/getMiddlePercen',
-            method:'get'
+            method:'post',
+            data:data
         })
     },
-    getOldPercent(){
+    getOldPercent(data){
         return request({
             url:'http://localhost:8009/shopInfo/getOldPercen',
-            method:'get'
+            method:'post',
+            data:data
         })
     },
     getCategory(){
