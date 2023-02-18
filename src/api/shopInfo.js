@@ -1,6 +1,24 @@
 import request from '@/utils/request'
 
 export default{
+    besetSeller(){   
+        return request({
+            url:'http://localhost:8009/region/consumption/bestSellGoods',
+            method:'get'
+        })
+    },
+    popularity(){   
+        return request({
+            url:'http://localhost:8009/region/consumption/Recommend',
+            method:'get'
+        })
+    },
+    getThreeCharts(){
+        return request({
+            url:'http://localhost:8009/region/consumption/getMaxType',
+            method:"post",
+        })
+    },
     getcigaretteChart(data){
         return request({
             url:'http://localhost:8009/shopInfo/getCigarette',

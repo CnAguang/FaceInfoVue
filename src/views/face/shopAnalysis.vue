@@ -30,8 +30,27 @@
             <!-- 第四小块 -->
             <div style="height: 50%" >
                 <div style="height: 50%;float: left;width: 50%;">
-                  <h3>本季度最受欢迎的类型是 </h3>
-                  <h3>本季度最受欢迎的商品是 </h3>
+
+
+                  <div style="margin-left:70px">
+                  <h1 style="color:#EEA331;" >本季度销售情况</h1>
+                  </div>
+                  <div style="float:left">
+                  <h3 style="color:white">最吸引的人群为:      </h3>
+                  </div>
+                  <div style = "float:left;margin-left:20px">
+                  <h3 style="color:aquamarine"> {{this.popularity }}</h3>
+                  </div>
+                
+
+                  <div style="float:left">
+                  <h3 style="color:white">最多人购买的商品为:   </h3>
+                  </div>
+                  <div style = "float:left;margin-left:20px">
+                  <h3 style="color:aquamarine"> {{this.goods }}</h3>
+                  </div>
+
+
                 </div>
                 <div style="float:left;height: 50%;width: 50%; " id="miniChart1">
                   最受欢迎类型
@@ -74,7 +93,14 @@ export default {
             },
             nums:[],
             goodsName:[],
-            values:[]
+            values:[],
+            list1:[],
+            list:[],
+            list3:[],
+            popularity:'',
+            number:null,
+            goods:'',
+            sell:null
         }
     },
     mounted(){
@@ -86,15 +112,31 @@ export default {
         this.showMiniChart2();
     },
     created(){
-
+      this.popularityRecommend()
+      this.besetSeller()
     },
     methods:{
+      besetSeller(){
+        shopInfo.besetSeller().then(response=>{
+          this.goods = response.data.goodsName
+          this.sell = response.data.value
+        })
+      },
+      popularityRecommend(){
+        shopInfo.popularity().then(response=>{
+          this.popularity = response.data.popular
+          this.number = response.data.data
+        })
+      },
        showMiniChart1(){
+        shopInfo.getThreeCharts().then(response =>{
+          this.list1 = response.data.list1
+          console.log(this.list1)
         this.miniChart1 = echarts.init(document.getElementById("miniChart1"),'dark');
       var  option = {
   title: {
     text: '最受欢迎的类型',
-    subtext: this.numberOne,
+    subtext: '前三名购买情况',
     left: 'center'
   },
   tooltip: {
@@ -111,9 +153,9 @@ export default {
       radius: '50%',
       color:["#DC541B","#EC7696","#FCC307"],
       data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
+        { value: this.list1[0].sell, name: this.list1[0].goodsName},
+        { value: this.list1[1].sell, name: this.list1[1].goodsName },
+        { value: this.list1[2].sell, name: this.list1[2].goodsName },
       ],
       emphasis: {
         itemStyle: {
@@ -125,14 +167,17 @@ export default {
     }
   ]
 };  
-      this.miniChart1.setOption(option);  
+      this.miniChart1.setOption(option);          
+    })
        },
        showMiniChart2(){
+        shopInfo.getThreeCharts().then(response =>{
+          this.list = response.data.list
         this.miniChart2 = echarts.init(document.getElementById("miniChart2"),'dark');
       var  option = {
   title: {
     text: '第二受欢迎的类型',
-    subtext: this.numberTwo,
+    subtext: '前三名购买情况',
     left: 'center'
   },
   tooltip: {
@@ -148,9 +193,9 @@ export default {
       type: 'pie',
       radius: '50%',
       data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
+        { value: this.list[0].sell, name: this.list[0].goodsName },
+        { value: this.list[1].sell, name: this.list[1].goodsName },
+        { value: this.list[2].sell, name: this.list[2].goodsName },
       ],
       color:["#73c0de","#9a60b4","#EE2746"],
       emphasis: {
@@ -163,14 +208,18 @@ export default {
     }
   ]
 };  
-      this.miniChart2.setOption(option);  
+      this.miniChart2.setOption(option);})
+
        },
        showMiniChart3(){
+        shopInfo.getThreeCharts().then(response=>{
+          this.list3 = response.data.list3
+          console.log(this.list3)
         this.miniChart3 = echarts.init(document.getElementById("miniChart3"),'dark');
       var  option = {
   title: {
     text: '第三受欢迎的类型',
-    subtext: this.numberThree,
+    subtext: '前三名购买情况',
     left: 'center'
   },
   tooltip: {
@@ -186,9 +235,9 @@ export default {
       type: 'pie',
       radius: '50%',
       data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
+        { value: this.list3[0].sell, name: this.list3[0].goodsName },
+        { value: this.list3[1].sell, name: this.list3[1].goodsName },
+        { value: this.list3[2].sell, name: this.list3[2].goodsName },
       ],
       color:["#91cc75","#fac858","#ee6666"],
       emphasis: {
@@ -201,7 +250,7 @@ export default {
     }
   ]
 };  
-      this.miniChart3.setOption(option);  
+      this.miniChart3.setOption(option);  })
        },
         showChart2(){
             shopInfo.getcigaretteChart(this.conditions).then(response =>{
